@@ -20,13 +20,7 @@ namespace elasticsearch_aspnet_blazor.Pages
         public string SearchValue { get; set; }
 
 
-        protected override Task OnInitializedAsync()
-        {
-            SearchValue = "Buddha";
-            return base.OnInitializedAsync();
-        }
-
-
+  
         private  async Task SearchQuotesAsync()
         {
             Quotes = await ElasticSearchClient.GetQuotesByAuthorAsync(SearchValue);

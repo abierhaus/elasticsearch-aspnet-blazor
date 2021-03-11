@@ -49,7 +49,7 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
         }
 
         /// <summary>
-        /// Get the quotes by the name of the author
+        ///     Get the quotes by the name of the author
         /// </summary>
         /// <param name="author"></param>
         /// <returns></returns>
@@ -73,7 +73,7 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
         }
 
         /// <summary>
-        /// Create a index
+        ///     Create an index
         /// </summary>
         /// <returns></returns>
         public async Task<CreateIndexResponse> CreateIndexAsync()
@@ -86,31 +86,30 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
         }
 
         /// <summary>
-        /// Deletes the index e.g. for clean up
+        ///     Deletes the index e.g. for clean up
         /// </summary>
         /// <returns></returns>
         public async Task DeleteIndexAsync()
         {
-          await Client.Indices.DeleteAsync(IndexName);
-          
+            await Client.Indices.DeleteAsync(IndexName);
         }
 
         /// <summary>
-        /// Inserts/ Index documents
+        ///     Inserts/ Index documents
         /// </summary>
         /// <param name="entities"></param>
         /// <returns></returns>
         public async Task BulkInsertAsync(IEnumerable<QuotesModel> entities)
         {
             var request = new BulkDescriptor();
-            
+
 
             foreach (var entity in entities)
                 request
                     .Index<QuotesModel>(op => op
                         .Id(Guid.NewGuid().ToString())
                         .Document(entity));
-          var result=   await Client.BulkAsync(request);
+            await Client.BulkAsync(request);
         }
     }
 }

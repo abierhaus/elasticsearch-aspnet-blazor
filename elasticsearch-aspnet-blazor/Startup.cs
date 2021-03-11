@@ -29,10 +29,7 @@ namespace elasticsearch_aspnet_blazor
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<IElasticSearchClient, ElasticSearchClient> ();
-
             services.AddSingleton<IElasticSearchDataSeeder, ElasticSearchDataSeeder>();
-
-
 
         }
 

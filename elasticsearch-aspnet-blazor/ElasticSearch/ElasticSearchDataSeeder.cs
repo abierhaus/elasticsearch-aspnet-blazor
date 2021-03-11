@@ -26,7 +26,7 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
 
         public async Task SeedAsync()
         {
-            //Get quotes from url
+            //Get quotes from url. Kudos to JamesFT and his effort to compile the quotes
             using var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync("https://raw.githubusercontent.com/JamesFT/Database-Quotes-JSON/master/quotes.json");
 
