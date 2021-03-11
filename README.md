@@ -7,4 +7,4 @@ Elastic Search has become  popular over the last few years and is indispensable 
 
 You can find the article [here](https://alexbierhaus.medium.com/elasticsearch-in-asp-net-blazor-e591f75d90cf)
 
-![image](https://user-images.githubusercontent.com/18400458/110815197-872e7a80-828a-11eb-8b25-8a5bbb2a7f59.png)
+![2021-03-11_17-17-29](https://user-images.githubusercontent.com/18400458/110818635-bdb9c480-828d-11eb-909e-13ea1d8aeb25.gif)
