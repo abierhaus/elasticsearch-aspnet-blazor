@@ -1,0 +1,43 @@
+﻿@page "/search"
+
+
+<h1>ElasticSearch quotes search</h1>
+
+<p>This component demonstrates searching data from ElasticSearch.</p>
+
+
+<div class="form-group row">
+     <input @bind="SearchValue"  />
+
+    <button class="btn btn-primary" @onclick="SearchQuotesAsync">Search</button>
+
+</div>
+
+
+
+@if (Quotes == null)
+{
+    <p><em>Please type in your search...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Author</th>
+                <th>Text</th>
+      
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var quote in Quotes)
+            {
+                <tr>
+                    <td>@quote.Author</td>
+                    <td>@quote.Text</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}

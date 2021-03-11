@@ -1,4 +1,3 @@
-using elasticsearch_aspnet_blazor.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using elasticsearch_aspnet_blazor.ElasticSearch;
-using elasticsearch_aspnet_blazor.ElasticSearch.Model;
 
 namespace elasticsearch_aspnet_blazor
 {
@@ -30,7 +28,6 @@ namespace elasticsearch_aspnet_blazor
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<IElasticSearchClient, ElasticSearchClient> ();
 
             services.AddSingleton<IElasticSearchDataSeeder, ElasticSearchDataSeeder>();

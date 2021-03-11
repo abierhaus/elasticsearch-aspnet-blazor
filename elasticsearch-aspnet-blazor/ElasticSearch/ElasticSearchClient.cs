@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Elasticsearch.Net;
-using elasticsearch_aspnet_blazor.ElasticSearch.Model;
+using elasticsearch_aspnet_blazor.Model;
 using Microsoft.Extensions.Configuration;
 using Nest;
 
@@ -10,27 +9,34 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
 {
     public interface IElasticSearchClient
     {
-        Task<CreateIndexResponse> CreateIndex();
-        BulkResponse BulkInsert(IEnumerable<QuotesModel> entities);
+        Task<CreateIndexResponse> CreateIndexAsync();
+        Task BulkInsertAsync(IEnumerable<QuotesModel> entities);
         Task<bool> TestConnectionAsync();
+
+
+        Task<IReadOnlyCollection<QuotesModel>> GetQuotesByAuthorAsync(string author);
+
+        Task DeleteIndexAsync();
     }
 
     public class ElasticSearchClient : IElasticSearchClient
     {
         protected readonly IElasticClient Client;
-        public readonly string IndexName = "Quotes_data";
+        public readonly string IndexName = "quotes";
 
 
         public ElasticSearchClient(IConfiguration configuration)
         {
             Configuration = configuration;
 
-            var credentials = new BasicAuthenticationCredentials(Configuration["ElasticSearch:Username"]
-                , Configuration["ElasticSearch:Password"]
-            );
+            //Configure client with credentials. Note: We will also use the default indexname here
+
+            var settings = new ConnectionSettings(new Uri(Configuration["ElasticSearch:Uri"]))
+                .DefaultIndex(IndexName).BasicAuthentication(Configuration["ElasticSearch:Username"]
+                    , Configuration["ElasticSearch:Password"]).EnableDebugMode();
 
 
-            Client = new ElasticClient(Configuration["ElasticSearch:CloudId"], credentials);
+            Client = new ElasticClient(settings);
         }
 
         public IConfiguration Configuration { get; }
@@ -42,26 +48,69 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
             return response.IsValid;
         }
 
+        /// <summary>
+        /// Get the quotes by the name of the author
+        /// </summary>
+        /// <param name="author"></param>
+        /// <returns></returns>
+        public async Task<IReadOnlyCollection<QuotesModel>> GetQuotesByAuthorAsync(string author)
+        {
+            var searchResponse = await Client.SearchAsync<QuotesModel>(s => s
+                .From(0)
+                .Size(25)
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.Author)
+                        .Query(author)
+                    )
+                )
+            );
 
-        public async Task<CreateIndexResponse> CreateIndex()
+            //Return documents
+
+            var documents = searchResponse.Documents;
+            return documents;
+        }
+
+        /// <summary>
+        /// Create a index
+        /// </summary>
+        /// <returns></returns>
+        public async Task<CreateIndexResponse> CreateIndexAsync()
         {
             var response = await Client.Indices.ExistsAsync(IndexName);
             if (response.Exists) return null;
+
+
             return await Client.Indices.CreateAsync(IndexName, index => index.Map<QuotesModel>(ms => ms.AutoMap()));
         }
 
-        public BulkResponse BulkInsert(IEnumerable<QuotesModel> entities)
+        /// <summary>
+        /// Deletes the index e.g. for clean up
+        /// </summary>
+        /// <returns></returns>
+        public async Task DeleteIndexAsync()
+        {
+          await Client.Indices.DeleteAsync(IndexName);
+          
+        }
+
+        /// <summary>
+        /// Inserts/ Index documents
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public async Task BulkInsertAsync(IEnumerable<QuotesModel> entities)
         {
             var request = new BulkDescriptor();
+            
 
             foreach (var entity in entities)
                 request
                     .Index<QuotesModel>(op => op
                         .Id(Guid.NewGuid().ToString())
-                        .Index(IndexName)
                         .Document(entity));
-
-            return Client.Bulk(request);
+          var result=   await Client.BulkAsync(request);
         }
     }
 }
