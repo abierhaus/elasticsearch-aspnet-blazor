@@ -1,7 +1,15 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<h1>Welcome to ElasticSearch Blazor Demo!</h1>
 
-Welcome to your new app.
+@if (IsClientWorking)
+{
+    <p>ElasticSearch Service configured correctly and working</p>
+}
+else
+{
+    <p>ElasticSearch Service not working. Please check configuration.</p>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+}
+
+

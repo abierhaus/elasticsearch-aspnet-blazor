@@ -12,22 +12,17 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
     {
         Task<CreateIndexResponse> CreateIndex();
         BulkResponse BulkInsert(IEnumerable<QuotesModel> entities);
+        Task<bool> TestConnectionAsync();
     }
 
     public class ElasticSearchClient : IElasticSearchClient
     {
-            protected readonly IElasticClient Client;
+        protected readonly IElasticClient Client;
         public readonly string IndexName = "Quotes_data";
-
-        public IConfiguration Configuration { get; }
-     
 
 
         public ElasticSearchClient(IConfiguration configuration)
         {
-
-
-
             Configuration = configuration;
 
             var credentials = new BasicAuthenticationCredentials(Configuration["ElasticSearch:Username"]
@@ -36,6 +31,15 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
 
 
             Client = new ElasticClient(Configuration["ElasticSearch:CloudId"], credentials);
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public async Task<bool> TestConnectionAsync()
+        {
+            var response = await Client.PingAsync();
+
+            return response.IsValid;
         }
 
 
@@ -59,8 +63,5 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
 
             return Client.Bulk(request);
         }
-
-
-    
     }
 }
