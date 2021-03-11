@@ -5,13 +5,14 @@ namespace elasticsearch_aspnet_blazor.Model
 {
     public class QuotesModel
     {
-        [JsonPropertyName("quoteText")]
-        [Keyword]
+        
+        [JsonPropertyName("quoteText")] //Attribute name in json
+        [Keyword] //Attribute for ElasticSearch
         public string Text { get; set; }
 
         
-        [JsonPropertyName("quoteAuthor")]
-        [Keyword]
+        [JsonPropertyName("quoteAuthor")] //Attribute name in json
+        [Keyword] //Attribute for ElasticSearch
         public string Author { get; set; }
     }
 
