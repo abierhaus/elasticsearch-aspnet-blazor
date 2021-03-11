@@ -38,12 +38,9 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
 
             // Creates the Index, if neccessary:
             await ElasticSearchClient.CreateIndexAsync();
-
-      
-
+            
             //Insert quotes
             await ElasticSearchClient.BulkInsertAsync(quotes);
-
 
         }
 

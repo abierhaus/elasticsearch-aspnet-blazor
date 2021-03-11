@@ -12,10 +12,7 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
         Task<CreateIndexResponse> CreateIndexAsync();
         Task BulkInsertAsync(IEnumerable<QuotesModel> entities);
         Task<bool> TestConnectionAsync();
-
-
         Task<IReadOnlyCollection<QuotesModel>> GetQuotesByAuthorAsync(string author);
-
         Task DeleteIndexAsync();
     }
 
@@ -27,19 +24,17 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
 
         public ElasticSearchClient(IConfiguration configuration)
         {
-            Configuration = configuration;
 
             //Configure client with credentials. Note: We will also use the default indexname here
 
-            var settings = new ConnectionSettings(new Uri(Configuration["ElasticSearch:Uri"]))
-                .DefaultIndex(IndexName).BasicAuthentication(Configuration["ElasticSearch:Username"]
-                    , Configuration["ElasticSearch:Password"]).EnableDebugMode();
+            var settings = new ConnectionSettings(new Uri(configuration["ElasticSearch:Uri"]))
+                .DefaultIndex(IndexName).BasicAuthentication(configuration["ElasticSearch:Username"]
+                    , configuration["ElasticSearch:Password"]).EnableDebugMode();
 
 
             Client = new ElasticClient(settings);
         }
 
-        public IConfiguration Configuration { get; }
 
         public async Task<bool> TestConnectionAsync()
         {
@@ -66,8 +61,7 @@ namespace elasticsearch_aspnet_blazor.ElasticSearch
                 )
             );
 
-            //Return documents
-
+            //Return documents from query
             var documents = searchResponse.Documents;
             return documents;
         }
